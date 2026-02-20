@@ -1,5 +1,12 @@
---Network create
+Backend env 
+MONGO_URI="mongodb://mongo:27017/"
+PORT=3001
 
+Frontend env
+REACT_APP_BACKEND_URL=https://3001-port-rqjpcay5khml3qoq.labs.kodekloud.com/
+
+
+--Network create
 docker network ls
 docker network create --driver bridge travelmemory
 
