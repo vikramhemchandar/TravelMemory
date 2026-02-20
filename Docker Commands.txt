@@ -1,0 +1,20 @@
+docker network ls
+
+docker network create --driver bridge travelmemory
+
+
+
+docker ps --filter "network=travelmemory"
+
+docker inspect <container_ID>
+docker logs <container_ID>
+
+docker build -t travelmemory_backend .
+docker build -t travelmemory_frontend .
+
+
+docker network create mongo_travelmemory --driver bridge mongo
+docker run -d -p 3001:3001 --network travelmemory travelmemory_backend:latest 
+docker run -d -p 3000:3000 --network travelmemory travelmemory_frontend:latest 
+
+docker ps -a
