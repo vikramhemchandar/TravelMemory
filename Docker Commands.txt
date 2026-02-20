@@ -1,3 +1,8 @@
+docker volume ls
+
+docker volume create sample_data
+docker run -d -p 27017:27017 -v sample_data:/data/db mongo
+
 docker network ls
 
 docker network create --driver bridge travelmemory
@@ -18,3 +23,20 @@ docker run -d -p 3001:3001 --network travelmemory travelmemory_backend:latest
 docker run -d -p 3000:3000 --network travelmemory travelmemory_frontend:latest 
 
 docker ps -a
+
+To get the list of all docker container IDs
+docker ps -aq
+
+To Delete :
+To remove the max amount of unsed data - stopped conainers, networks, images and cache
+>docker system prune -a
+
+To stop all docker running containers
+>docker stop $(docker ps -aq)
+
+To delete all docker running containers
+>docker rm $(docker ps -aq)
+
+To delete all images
+>docker rm $(docker images -aq)
+
