@@ -12,7 +12,7 @@ services:
     depends_on:
       - database
     networks:
-      - tmapp_network
+      - travelmemory_network
 
   frontend:
     build: ./frontend
@@ -20,11 +20,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_BACKEND_URL=https://3001-port-rqjpcay5khml3qoq.labs.kodekloud.com/
+      - REACT_APP_BACKEND_URL=http://localhost:3001/
     depends_on:
       - backend
     networks:
-      - tmapp_network
+      - travelmemory_network
   
   database:
     image: mongo
@@ -34,11 +34,11 @@ services:
     volumes:
       - mongo-data:/data/db
     networks:
-      - tmapp_network
+      - travelmemory_network
 
 volumes:
   mongo-data:
 
 networks:
-  tmapp_network:
+  travelmemory_network:
     driver: bridge
