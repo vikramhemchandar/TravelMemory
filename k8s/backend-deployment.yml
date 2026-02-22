@@ -1,24 +1,48 @@
-appVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment
+  name: backend
   labels:
-    app: travelmemory-backend
+    app: travelmemory
+    tier: backend
 spec:
   replicas: 2
-  selecdtor:
+  selector:
     matchLabels:
-      component: travelmemory-backend
+      app: travelmemory
+      tier: backend
   template:
     metadata:
-      labels: 
-        component: travelmemory-backend  
+      labels:
+        app: travelmemory
+        tier: backend
     spec:
       containers:
-        - name: travelmemory-backend
-          image: vikramkumar2001/travelmemory-backend:latest
+        - name: backend
+          image: vikramhemchandar/travelmemory:backendv1.0
+          imagePullPolicy: IfNotPresent  # Useful if you are using locally built images (like in Minikube)
           ports:
             - containerPort: 3001
-          envFrom:
-            - configMapRef:
-                name: backend-config
+          env:
+            - name: PORT
+              value: "3001"
+            - name: MONGO_URI
+              value: "mongodb://mongo:27017/"  # 'mongo' will be the name of your database service later
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  labels:
+    app: travelmemory
+    tier: backend
+spec:
+  type: NodePort
+  selector:
+    app: travelmemory
+    tier: backend
+  ports:
+    - port: 3001
+      targetPort: 3001
+      nodePort: 30001
+      protocol: TCP

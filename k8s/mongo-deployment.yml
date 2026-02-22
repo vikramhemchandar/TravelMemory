@@ -1,0 +1,67 @@
+# 1. Store the data permanently using a Persistent Volume Claim (PVC)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+  labels:
+    app: travelmemory
+    tier: database
+spec:
+  accessModes:
+    - ReadWriteOnce    # This means the volume can be mounted as read-write by a single node
+  resources:
+    requests:
+      storage: 1Gi     # We are requesting 1 Gigabyte of storage space
+
+---
+# 2. Run the MongoDB container using a Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  labels:
+    app: travelmemory
+    tier: database
+spec:
+  replicas: 1          # Databases typically start with 1 replica to avoid data conflicts
+  selector:
+    matchLabels:
+      app: travelmemory
+      tier: database
+  template:
+    metadata:
+      labels:
+        app: travelmemory
+        tier: database
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-storage     # Matches the volume name defined below
+              mountPath: /data/db     # The default path where MongoDB saves its data!
+      volumes:
+        - name: mongo-storage         # A unique identifier for this volume inside the Pod
+          persistentVolumeClaim:
+            claimName: mongo-pvc      # This carefully links back to the PVC we created in Step 1!
+
+---
+# 3. Expose the database to the backend using a Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo          # EXACT MATCH: This name is critical! It allows your backend to connect using "mongodb://mongo:27017/"
+  labels:
+    app: travelmemory
+    tier: database
+spec:
+  type: ClusterIP      # Internal cluster networking only (best for databases so they aren't exposed to the internet)
+  selector:
+    app: travelmemory
+    tier: database
+  ports:
+    - port: 27017
+      targetPort: 27017
+      protocol: TCP
