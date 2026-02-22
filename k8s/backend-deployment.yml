@@ -1,0 +1,24 @@
+appVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: travelmemory-backend
+spec:
+  replicas: 2
+  selecdtor:
+    matchLabels:
+      component: travelmemory-backend
+  template:
+    metadata:
+      labels: 
+        component: travelmemory-backend  
+    spec:
+      containers:
+        - name: travelmemory-backend
+          image: vikramkumar2001/travelmemory-backend:latest
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - configMapRef:
+                name: backend-config
