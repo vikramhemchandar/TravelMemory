@@ -49,9 +49,12 @@ To delete all images
 >docker rm $(docker images -aq)
 
 To build with a tag which helps to push to docker hub
->docker build-t vikramhemchandar/travelmemory:frontendv1.0 .
->docker build-t vikramhemchandar/travelmemory:backendv1.0 .
+>docker build -t vikramhemchandar/travelmemory:frontendv1.0 .
+>docker build -t vikramhemchandar/travelmemory:backendv1.0 .
 
 To push the image to docker hub
->docker push vikramhemchandar/travelmemory:frontendv1.0 .
->docker push vikramhemchandar/travelmemory:backendv1.0 .
+>docker push vikramhemchandar/travelmemory:frontendv1.0
+>docker push vikramhemchandar/travelmemory:backendv1.0
+
+Port forwarding
+>kubectl port-forward service/backend 3001:3001
